@@ -25,12 +25,15 @@ export class GameManager {
         socket.on("message", (data) => {
             const message = JSON.parse(data.toString());
             if (message.type == INIT_GAME) {
+                // handle case where the same user send request twice
                 if (this.pendingUser) {
                     //start the game
+                    console.log("Game started")
                     const game = new Game(this.pendingUser, socket);
                     this.games.push(game);
                     this.pendingUser = null;
                 } else {
+                    console.log("User pu in pending")
                     this.pendingUser = socket;
                 }
             }
@@ -42,6 +45,7 @@ export class GameManager {
                 if(game) {
                     //play the move
                     game.makeMove(socket, message.move);
+                    console.log(message)
                 }
             }
         });
