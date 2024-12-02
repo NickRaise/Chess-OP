@@ -16,42 +16,52 @@ const ChessBoard = ({ board, socket, chess, setBoard }: ChessBoardType) => {
         return <ChessLoading />;
     }
 
+    const handleOnSelect = (squarePosition: Square) => {
+        if (!from) {
+            setFrom(squarePosition)
+        }
+        else {
+            if (from == squarePosition) return
+            const move = {
+                from,
+                to: squarePosition
+            }
+            const message = {
+                type: MOVE,
+                move
+            }
+            socket.send(JSON.stringify(message))
+            try {
+                //checks if it is a valid move for the current user
+                const tempChess = new Chess(chess?.fen())
+                tempChess.move(move)
+            } catch (e) {
+                setFrom(null)
+            }
+            setBoard(chess?.board())
+            setFrom(null)
+        }
+    }
+
     return (
         <div className="grid grid-cols-8 gap-0" style={{ width: "384px", height: "384px" }}>
             {board.map((row, rowIndex) =>
                 row.map((piece, colIndex) => {
                     const isWhiteSquare = (rowIndex + colIndex) % 2 === 0;
-                    const squareColorClass = isWhiteSquare ? "bg-white" : "bg-gray-700";
+                    const squareColorClass = isWhiteSquare ? "bg-[#E8EDF9]" : "bg-[#B7C0D8]";
+                    const selectedColor = "bg-[#7B61FF]"
                     const squarePosition: Square = String.fromCharCode(97 + colIndex) + String(8 - rowIndex) as Square;
                     return (
                         <div
-                            onClick={(e) => {
-                                console.log(squarePosition)
-                                if (!from) {
-                                    setFrom(squarePosition)
-                                }
-                                else {
-                                    if (from == squarePosition) return
-                                    const move = {
-                                        from,
-                                        to: squarePosition
-                                    }
-                                    const message = {
-                                        type: MOVE,
-                                        move
-                                    }
-                                    socket.send(JSON.stringify(message))
-                                    chess?.move(move)
-                                    setBoard(chess?.board())
-                                    setFrom(null)
-                                }
+                            onClick={() => {
+                                handleOnSelect(squarePosition)
                             }}
                             key={`${rowIndex}-${colIndex}`}
-                            className={`w-12 h-12 ${squareColorClass} flex items-center justify-center`}
+                            className={`w-12 h-12  ${from === squarePosition ? selectedColor : squareColorClass} flex items-center justify-center`}
                         >
                             {piece ? (
                                 <span className={`font-bold ${piece.color === "w" ? "text-red-950" : "text-slate-950"}`}>
-                                    {piece.square.toUpperCase()}
+                                    <img className="w-7 h-7" src={`/chess_pieces/${piece.color}-${piece.type}.svg`} alt="no pic" />
                                 </span>
                             ) : null}
                         </div>
@@ -72,7 +82,7 @@ const ChessLoading = () => {
                         .fill(null)
                         .map((_, colIndex) => {
                             const isWhiteSquare = (rowIndex + colIndex) % 2 === 0;
-                            const squareColorClass = isWhiteSquare ? "bg-white" : "bg-gray-700";
+                            const squareColorClass = isWhiteSquare ? "bg-[#E8EDF9]" : "bg-[#B7C0D8]";
 
                             return (
                                 <div

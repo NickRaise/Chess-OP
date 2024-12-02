@@ -10,7 +10,7 @@ import { MOVE, INIT_GAME, GAME_OVER } from "../types";
 
 const Game = () => {
   const socket = useSocket()
-  const [chess, setChess] = useState<Chess>()
+  const [chess, setChess] = useState<Chess>(new Chess())
   const [board, setBoard] = useState<boardType>()
 
   useEffect(() => {
@@ -21,21 +21,13 @@ const Game = () => {
       const message = JSON.parse(event.data)
       switch (message.type) {
         case INIT_GAME:
-          console.log("Game started")
-          const newChess = new Chess()
-          setChess(newChess)
-          console.log("chess has been defined", newChess)
-          setBoard(newChess.board())
+          setBoard(chess.board())
           break;
         case MOVE:
-          console.log("this is chess", chess)
-          console.log("this is board", board)
           const move = message.payload.move
           console.log(message.payload.move)
-          if(!chess) console.log("chess is not defined :::(")
           chess.move(move)
           setBoard(chess.board())
-          setChess(chess)
           console.log("Mode made", move)
           break;
         case GAME_OVER:

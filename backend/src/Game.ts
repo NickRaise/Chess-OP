@@ -67,18 +67,15 @@ export class Game {
             return;
         }
 
-        if(this.moveCount % 2 === 0) {
-            this.player2.send(JSON.stringify({
-                type: MOVE,
-                payload: {move},
-            }))
-        }
-        else {
-            this.player1.send(JSON.stringify({
-                type: MOVE,
-                payload: {move},
-            }))
-        }
+        this.player2.send(JSON.stringify({
+            type: MOVE,
+            payload: {move},
+        }))
+        this.player1.send(JSON.stringify({
+            type: MOVE,
+            payload: {move},
+        }))
+        
 
         this.moveCount++;
         // check if game over
