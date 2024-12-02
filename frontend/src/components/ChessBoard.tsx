@@ -21,7 +21,7 @@ const ChessBoard = ({ board, socket, chess, setBoard }: ChessBoardType) => {
             setFrom(squarePosition)
         }
         else {
-            if (from == squarePosition) return
+            if (from == squarePosition) return setFrom(null)
             const move = {
                 from,
                 to: squarePosition
