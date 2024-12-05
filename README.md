@@ -1,9 +1,9 @@
 # Chess Project
 
-This is a real-time multiplayer chess game where you can play with another player in real time.
+This is a real-time multiplayer chess game where you can play with another player in real-time.
 
 ## Features
-- Play chess with another player in real-time.
+- Play chess with another player in real time.
 - Intuitive and responsive UI.
 - Real-time updates using WebSockets.
 
@@ -17,7 +17,7 @@ This is a real-time multiplayer chess game where you can play with another playe
 1. **Clone the Repository**
    Clone the repository to your local machine:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/NickRaise/Chess-OP
 
 2. **Navigate to the Project Directory** Change into the project directory:
     ```bash
@@ -25,7 +25,7 @@ This is a real-time multiplayer chess game where you can play with another playe
 
 3. **Install Dependencies** Install all necessary dependencies:
     ```bash
-    cd Chess-OP
+    cd npm i
 
 4. **Run in Development Mode** For development, run the following command:
     ```bash
