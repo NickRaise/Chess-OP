@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview --port 10000"
+    "preview": "vite preview --host"
   },
   "dependencies": {
     "chess.js": "^1.0.0-beta.8",
