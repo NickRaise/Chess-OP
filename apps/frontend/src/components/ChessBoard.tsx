@@ -1,5 +1,5 @@
 import { Dispatch, MutableRefObject, SetStateAction, useState } from "react";
-import { boardType, MOVE } from "../types"
+import { boardType, MOVE, gameStatus } from "../types"
 import { Chess, Color, Square } from "chess.js";
 
 interface ChessBoardType {
@@ -8,9 +8,10 @@ interface ChessBoardType {
     chess: Chess | undefined,
     setBoard: Dispatch<SetStateAction<boardType | undefined>>,
     currentUserPieceColor: MutableRefObject<"b" | "w" | null>,
+    gameStatus: gameStatus
 }
 
-const ChessBoard = ({ board, socket, chess, setBoard, currentUserPieceColor }: ChessBoardType) => {
+const ChessBoard = ({ board, socket, chess, setBoard, currentUserPieceColor, gameStatus }: ChessBoardType) => {
 
     const [from, setFrom] = useState<null | Square>()
     if (!board) {
@@ -19,12 +20,14 @@ const ChessBoard = ({ board, socket, chess, setBoard, currentUserPieceColor }: C
 
     const handleOnSelect = (squarePosition: Square, selectedPieceColor: undefined | Color) => {
 
+        if (gameStatus.gameOver == true) return
+
         // if the turn is not the users, exit from the function
         if (chess?.turn() !== currentUserPieceColor.current) return
 
         if (!from) {
             // if the selected square is not valid exit
-            if(selectedPieceColor !== currentUserPieceColor.current) return
+            if (selectedPieceColor !== currentUserPieceColor.current) return
             setFrom(squarePosition)
         }
         else {
@@ -59,13 +62,17 @@ const ChessBoard = ({ board, socket, chess, setBoard, currentUserPieceColor }: C
                     const squareColorClass = isWhiteSquare ? "bg-[#E8EDF9]" : "bg-[#B7C0D8]";
                     const selectedColor = "bg-[#7B61FF]"
                     const squarePosition: Square = String.fromCharCode(97 + colIndex) + String(8 - rowIndex) as Square;
+                    const loserKing: boolean = gameStatus.gameOver === true &&
+                        piece?.type === 'k' &&
+                        (piece.color === 'w' ? 'white' : 'black') !== gameStatus.winner;
+                    console.log("Lossers king", loserKing)
                     return (
                         <div
                             onClick={() => {
                                 handleOnSelect(squarePosition, piece?.color)
                             }}
                             key={`${rowIndex}-${colIndex}`}
-                            className={`w-12 h-12  ${from === squarePosition ? selectedColor : squareColorClass} flex items-center justify-center`}
+                            className={`w-12 h-12 ${from === squarePosition ? selectedColor : squareColorClass} ${loserKing && "bg-red-400"} flex items-center justify-center`}
                         >
                             {piece ? (
                                 <span className={`font-bold ${piece.color === "w" ? "text-red-950" : "text-slate-950"}`}>

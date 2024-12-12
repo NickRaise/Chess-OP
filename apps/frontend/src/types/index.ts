@@ -4,3 +4,7 @@ export type boardType = ({ square: Square; type: PieceSymbol; color: Color; } | 
 export const INIT_GAME = "init_game"
 export const MOVE = "move"
 export const GAME_OVER = "game_over"
+export type gameStatus = ({
+    gameOver: Boolean,
+    winner: 'black' | 'white' | null
+})

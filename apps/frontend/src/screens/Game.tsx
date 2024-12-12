@@ -3,18 +3,22 @@ import Button from "../components/Button";
 import ChessBoard from "../components/ChessBoard";
 import useSocket from "../hooks/useSocket";
 import { Chess } from "chess.js";
-import { boardType } from "../types";
+import { boardType, gameStatus } from "../types";
 import { MOVE, INIT_GAME, GAME_OVER } from "../types";
 
 
 const Game = () => {
   const socket = useSocket()
-  const [chess, setChess] = useState<Chess>(new Chess())
+  const chess = new Chess()
   const [board, setBoard] = useState<boardType>()
   const currentUserPieceColor = useRef<null | 'w' | 'b'>(null)
   const [gameStarted, setGameStarted] = useState<true | false>(false)
   const [loading, setLoading] = useState(false)
   const [currentUserTurn, setCurrentUserTurn] = useState(false)
+  const [gameStatus, setGameStatus] = useState<gameStatus>({
+    gameOver: false,
+    winner: null
+  })
 
   useEffect(() => {
     if (!socket) return
@@ -34,20 +38,14 @@ const Game = () => {
           break;
 
         case MOVE:
-          const move = message.payload.move
-          console.log(message.payload.move)
-          chess.move(move)
-          setBoard(chess.board())
-          setCurrentUserTurn(true)
-          const playedBy = message.payload.playedBy
-          if (playedBy === currentUserPieceColor.current) setCurrentUserTurn(false)
-          else setCurrentUserTurn(true)
-          console.log("setting user turn to true inside MOVE", "played by",playedBy, "piece turn", currentUserPieceColor.current)
-          console.log("Mode made", move)
+          makeMove(message)
           break;
 
         case GAME_OVER:
-          console.log("Game over")
+          makeMove(message)
+          const winner = message.payload.winner
+          showGameOver(winner)
+          console.log("Game over... Winner is ", winner)
           break;
 
         default:
@@ -55,6 +53,30 @@ const Game = () => {
       }
     }
   }, [socket])
+
+  const makeMove = (message: {
+    payload: {
+      move: { from: string, to: string; },
+      playedBy: 'w' | 'b',
+      winner?: 'black' | 'white'
+    }
+  }) => {
+    const move = message.payload.move
+    console.log(message.payload.move)
+    chess.move(move)
+    setBoard(chess.board())
+    setCurrentUserTurn(true)
+    const playedBy = message.payload.playedBy
+    if (playedBy === currentUserPieceColor.current) setCurrentUserTurn(false)
+    else setCurrentUserTurn(true)
+  }
+
+  const showGameOver = (winner: 'black' | 'white') => {
+    setGameStatus({
+      gameOver: true,
+      winner
+    })
+  }
 
   if (!socket)
     return <div className="text-white">Connecting...</div>
@@ -64,24 +86,26 @@ const Game = () => {
       <div className="max-w-screen-lg p-8 w-full">
         <div className="grid grid-cols-5 w-full gap-4">
           <div className="col-span-4 w-full">
-            <ChessBoard board={board} socket={socket} chess={chess} setBoard={setBoard} currentUserPieceColor={currentUserPieceColor} />
+            <ChessBoard board={board} socket={socket} chess={chess} setBoard={setBoard} currentUserPieceColor={currentUserPieceColor} gameStatus={gameStatus} />
           </div>
           <div className="col-span-1 flex flex-col justify-center">
-            {gameStarted !== true ? <Button onClick={
-              () => {
-                if (loading === true) return
-                setLoading(true)
-                console.log("Init game send")
-                socket.send(JSON.stringify({
-                  "type": INIT_GAME,
-                }))
-              }
-            }>
-              {loading === true ? <Loading /> : "Play"}
-            </Button> :
-              <div className="mt-5 bg-slate-700 text-center px-2 py-1 rounded-md text-3xl font-bold">
-                {currentUserTurn ? "Your Turn" : "Waiting for opponent..."}
-              </div>
+            {gameStatus.gameOver === true ?
+              <GameOverPanel winner={gameStatus.winner} /> :
+              (gameStarted !== true) ? <Button onClick={
+                () => {
+                  if (loading === true) return
+                  setLoading(true)
+                  console.log("Init game send")
+                  socket.send(JSON.stringify({
+                    "type": INIT_GAME,
+                  }))
+                }
+              }>
+                {loading === true ? <Loading /> : "Play"}
+              </Button> :
+                <div className="mt-5 bg-slate-700 text-center px-2 py-1 rounded-md text-3xl font-bold">
+                  {currentUserTurn ? "Your Turn" : "Waiting for opponent..."}
+                </div>
             }
           </div>
         </div>
@@ -90,6 +114,13 @@ const Game = () => {
   );
 };
 
+const GameOverPanel = ({ winner }: { winner: 'black' | 'white' | null }) => {
+  return (
+    <div className="text-2xl">
+      Winner is {winner}
+    </div>
+  )
+}
 
 const Loading = () => {
   return (<div role="status">
