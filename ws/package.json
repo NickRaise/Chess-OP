@@ -3,5 +3,8 @@
     "@types/ws": "^8.5.13",
     "chess.js": "*",
     "ws": "8.18.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
   }
 }
