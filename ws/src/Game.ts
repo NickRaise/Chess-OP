@@ -79,8 +79,10 @@ export class Game {
             }
         })
 
-        this.player2.send(moveMessage)
-        this.player1.send(moveMessage)
+        if(socket == this.player1)
+            this.player2.send(moveMessage)
+        else
+            this.player1.send(moveMessage)
         
 
         this.moveCount++;

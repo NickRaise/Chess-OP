@@ -8,10 +8,11 @@ interface ChessBoardType {
     chess: Chess | undefined,
     setBoard: Dispatch<SetStateAction<boardType | undefined>>,
     currentUserPieceColor: MutableRefObject<"b" | "w" | null>,
-    gameStatus: gameStatus
+    gameStatus: gameStatus,
+    setCurrentUserTurn: Dispatch<SetStateAction<boolean>>
 }
 
-const ChessBoard = ({ board, socket, chess, setBoard, currentUserPieceColor, gameStatus }: ChessBoardType) => {
+const ChessBoard = ({ board, socket, chess, setBoard, currentUserPieceColor, gameStatus, setCurrentUserTurn }: ChessBoardType) => {
 
     const [from, setFrom] = useState<null | Square>()
     if (!board) {
@@ -25,9 +26,6 @@ const ChessBoard = ({ board, socket, chess, setBoard, currentUserPieceColor, gam
         
         // if the turn is not the users, exit from the function
         if (chess?.turn() !== currentUserPieceColor.current) {
-            console.log("------------------")
-            console.log("chess.turn = ", chess?.turn())
-            console.log("------------------")
             return
         }
         
@@ -51,7 +49,9 @@ const ChessBoard = ({ board, socket, chess, setBoard, currentUserPieceColor, gam
                 //checks if it is a valid move for the current user
                 const tempChess = new Chess(chess?.fen())
                 tempChess.move(move)
+                chess.move(move)
                 socket.send(JSON.stringify(message))
+                setCurrentUserTurn(false)
             } catch (e) {
                 setFrom(null)
             }

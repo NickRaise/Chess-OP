@@ -65,9 +65,7 @@ const Game = () => {
     console.log("after move made", chess.turn())
     setBoard(chess.board())
     setCurrentUserTurn(true)
-    const playedBy = message.payload.playedBy
-    if (playedBy === currentUserPieceColor.current) setCurrentUserTurn(false)
-    else setCurrentUserTurn(true)
+    setCurrentUserTurn(true)
   }
 
   const showGameOver = (winner: 'black' | 'white') => {
@@ -85,7 +83,7 @@ const Game = () => {
       <div className="max-w-screen-lg p-8 w-full">
         <div className="grid grid-cols-5 w-full gap-4">
           <div className="col-span-4 w-full">
-            <ChessBoard board={board} socket={socket} chess={chess} setBoard={setBoard} currentUserPieceColor={currentUserPieceColor} gameStatus={gameStatus} />
+            <ChessBoard board={board} socket={socket} chess={chess} setBoard={setBoard} currentUserPieceColor={currentUserPieceColor} gameStatus={gameStatus} setCurrentUserTurn={setCurrentUserTurn} />
           </div>
           <div className="col-span-1 flex flex-col justify-center">
             {gameStatus.gameOver === true ?

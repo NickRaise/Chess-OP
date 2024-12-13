@@ -70,8 +70,10 @@ class Game {
                 playedBy: this.moveCount % 2 === 0 ? 'w' : 'b'
             }
         });
-        this.player2.send(moveMessage);
-        this.player1.send(moveMessage);
+        if (socket == this.player1)
+            this.player2.send(moveMessage);
+        else
+            this.player1.send(moveMessage);
         this.moveCount++;
         // check if game over
         //Send the updated board to both players
