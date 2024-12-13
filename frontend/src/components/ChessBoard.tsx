@@ -9,10 +9,11 @@ interface ChessBoardType {
     setBoard: Dispatch<SetStateAction<boardType | undefined>>,
     currentUserPieceColor: MutableRefObject<"b" | "w" | null>,
     gameStatus: gameStatus,
-    setCurrentUserTurn: Dispatch<SetStateAction<boolean>>
+    setCurrentUserTurn: Dispatch<SetStateAction<boolean>>,
+    setGameStatus: Dispatch<SetStateAction<gameStatus>>
 }
 
-const ChessBoard = ({ board, socket, chess, setBoard, currentUserPieceColor, gameStatus, setCurrentUserTurn }: ChessBoardType) => {
+const ChessBoard = ({ board, socket, chess, setBoard, currentUserPieceColor, gameStatus, setCurrentUserTurn, setGameStatus }: ChessBoardType) => {
 
     const [from, setFrom] = useState<null | Square>()
     if (!board) {
@@ -50,6 +51,12 @@ const ChessBoard = ({ board, socket, chess, setBoard, currentUserPieceColor, gam
                 const tempChess = new Chess(chess?.fen())
                 tempChess.move(move)
                 chess.move(move)
+                if (chess.isGameOver()) {
+                    setGameStatus({
+                        gameOver: true,
+                        winner: currentUserPieceColor.current == 'w' ? "white" : "black"
+                    })
+                }
                 socket.send(JSON.stringify(message))
                 setCurrentUserTurn(false)
             } catch (e) {
