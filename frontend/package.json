@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview --host"
+    "preview": "vite preview --host",
+    "start": "concurrently \"npm run dev\" \"cd ../backend && node dist/index.js\" \"cd ../ws && node dist/index.js\""
   },
   "dependencies": {
     "chess.js": "^1.0.0-beta.8",
@@ -21,6 +22,7 @@
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
+    "concurrently": "^9.1.2",
     "eslint": "^9.15.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",

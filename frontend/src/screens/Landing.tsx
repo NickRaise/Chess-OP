@@ -6,11 +6,11 @@ const Landing = () => {
     return (
         <div className="h-screen flex items-center">
             <div className="flex justify-around items-center gap-5 flex-wrap">
-                <div className="w-1/3">
+                <div className="w-4/5 md:w-1/3 mb-10 md:mb-0">
                     <img src="chess-board.jpeg" alt="chessboard image" />
                 </div>
                 <div className="flex flex-col justify-center items-center gap-3">
-                    <div className="text-white flex text-3xl items-center flex-wrap">
+                    <div className="text-white flex text-xl md:text-3xl items-center flex-wrap">
                         <span className="text-center font-bold">
                             {" "}
                             Play chess online with others worldwide!
