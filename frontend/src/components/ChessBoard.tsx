@@ -13,8 +13,8 @@ interface ChessBoardType {
     setGameStatus: Dispatch<SetStateAction<gameStatus>>;
     currentPlayerInCheck: Boolean;
     setCurrentPlayerInCheck: Dispatch<SetStateAction<Boolean>>;
-    opponentInCheck: Boolean,
-    setOpponentInCheck: Dispatch<SetStateAction<Boolean>>
+    opponentInCheck: Boolean;
+    setOpponentInCheck: Dispatch<SetStateAction<Boolean>>;
 }
 
 const ChessBoard = ({
@@ -29,7 +29,7 @@ const ChessBoard = ({
     currentPlayerInCheck,
     setCurrentPlayerInCheck,
     opponentInCheck,
-    setOpponentInCheck
+    setOpponentInCheck,
 }: ChessBoardType) => {
     const [from, setFrom] = useState<null | Square>();
     if (!board) {
@@ -81,7 +81,7 @@ const ChessBoard = ({
 
                 // if the opposition is in check, highlight their king
                 if (chess.inCheck()) {
-                    setOpponentInCheck(true)
+                    setOpponentInCheck(true);
                 }
 
                 if (chess.isGameOver()) {
@@ -102,10 +102,7 @@ const ChessBoard = ({
     };
 
     return (
-        <div
-            className="grid grid-cols-8 gap-0"
-            style={{ width: "384px", height: "384px" }}
-        >
+        <div className="grid grid-cols-8 w-[95vw] h-[95vw] md:w-[500px] md:h-[500px] m-auto md:m-0">
             {board.map((row, rowIndex) =>
                 row.map((piece, colIndex) => {
                     const isWhiteSquare = (rowIndex + colIndex) % 2 === 0;
@@ -122,17 +119,23 @@ const ChessBoard = ({
                     const currentPlayerKing =
                         piece?.type === "k" &&
                         piece.color === currentUserPieceColor.current;
-                    const opponentKing = piece?.type === 'k' && piece.color !== currentUserPieceColor.current
+                    const opponentKing =
+                        piece?.type === "k" &&
+                        piece.color !== currentUserPieceColor.current;
                     const makeCurrentSquareRed =
-                        loserKing || (currentPlayerInCheck && currentPlayerKing) || (opponentInCheck && opponentKing);
+                        loserKing ||
+                        (currentPlayerInCheck && currentPlayerKing && (from !== squarePosition)) ||
+                        (opponentInCheck && opponentKing);
+                    
                     return (
                         <div
                             onClick={() => {
                                 handleOnSelect(squarePosition, piece?.color);
+                                console.log(from, squarePosition)
                             }}
                             key={`${rowIndex}-${colIndex}`}
-                            className={`w-12 h-12 ${from === squarePosition ? selectedColor : squareColorClass
-                                } ${makeCurrentSquareRed && "bg-red-400"
+                            className={`w-full aspect-square ${makeCurrentSquareRed && "bg-red-400"
+                                } ${from === squarePosition ? selectedColor : squareColorClass
                                 } flex items-center justify-center`}
                         >
                             {piece ? (
@@ -141,7 +144,7 @@ const ChessBoard = ({
                                         }`}
                                 >
                                     <img
-                                        className="w-7 h-7"
+                                        className="w-7 h-7 md:w-8 md:h-8"
                                         src={`/chess_pieces/${piece.color}-${piece.type}.svg`}
                                         alt="no pic"
                                     />
@@ -157,10 +160,7 @@ const ChessBoard = ({
 
 const ChessLoading = () => {
     return (
-        <div
-            className="grid grid-cols-8 gap-0"
-            style={{ width: "400px", height: "400px" }}
-        >
+        <div className="grid grid-cols-8 gap-0 w-[95vw] h-[95vw] md:w-[500px] md:h-[500px] m-auto md:m-0">
             {Array(8)
                 .fill(null)
                 .map((_, rowIndex) =>

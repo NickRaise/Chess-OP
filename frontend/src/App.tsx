@@ -4,7 +4,7 @@ import Game from "./screens/Game";
 import Auth from "./screens/Auth";
 function App() {
     return (
-        <div className="bg-gray-900 h-screen ">
+        <div className="bg-gray-900 h-screen">
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<Landing/>} />

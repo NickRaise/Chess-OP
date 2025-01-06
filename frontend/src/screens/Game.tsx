@@ -87,10 +87,14 @@ const Game = () => {
   if (!socket) return <ChessLoading />;
 
   return (
-    <div className="justify-center flex text-white">
-      <div className="max-w-screen-lg p-8 w-full">
-        <div className="grid grid-cols-5 w-full gap-4">
-          <div className="col-span-4 w-full">
+    <div className="justify-center items-center h-full flex text-white">
+      <div className="max-w-screen-lg px-2 py-8 md:p-8 w-full">
+        {
+          currentUserPieceColor.current != null &&
+          <div className="text-3xl font-bold text-center mb-3">You are {(currentUserPieceColor.current === 'b' ? "Black" : "White")}</div>
+        }
+        <div className="grid md:grid-cols-5 w-full gap-7 md:gap-4">
+          <div className="md:col-span-4 w-full">
             <ChessBoard
               board={board}
               socket={socket}
@@ -106,7 +110,7 @@ const Game = () => {
               setOpponentInCheck={setOpponentInCheck}
             />
           </div>
-          <div className="col-span-1 flex flex-col justify-center">
+          <div className="md:col-span-1 w-1/2 md:w-auto flex flex-col justify-center translate-x-[50%] md:translate-x-0">
             {gameStatus.gameOver === true ? (
               <GameOverPanel winner={gameStatus.winner} />
             ) : gameStarted !== true ? (
@@ -124,8 +128,8 @@ const Game = () => {
                 {loading === true ? <Loading /> : "Play"}
               </Button>
             ) : (
-              <div className="mt-5 bg-slate-700 text-center px-2 py-1 rounded-md text-3xl font-bold">
-                {currentUserTurn ? "Your Turn" : "Waiting for opponent..."}
+              <div className="mt-5 bg-slate-700 min-h-20 md:min-h-0 flex justify-center items-center text-center px-2 py-1  rounded-md text-3xl font-bold">
+                {currentUserTurn ? "Your Turn" : "Opponent's turn..."}
               </div>
             )}
           </div>

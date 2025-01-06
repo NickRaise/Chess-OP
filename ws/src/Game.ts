@@ -30,10 +30,8 @@ export class Game {
     }
 
     makeMove(socket: WebSocket, move: {from: string, to: string;}) {
-        //validation here
-        //is it this user move
-        //is this move valid
-        console.log("movecount", this.moveCount)
+        
+        // exit if the move is not made by the valid player
         if (this.moveCount % 2 === 0 && socket !== this.player1) {
             console.log("early return 1")
             return
@@ -51,6 +49,7 @@ export class Game {
             return
         }
 
+        // check if the game is over ?
         if(this.board.isGameOver()) {
             this.player1.send(JSON.stringify({
                 type: GAME_OVER,
@@ -84,9 +83,6 @@ export class Game {
         else
             this.player1.send(moveMessage)
         
-
         this.moveCount++;
-        // check if game over
-        //Send the updated board to both players
     }
 }
