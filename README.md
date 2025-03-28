@@ -2,7 +2,12 @@
 
 Chess-Op is a real-time multiplayer chess application built with **React**, **Tailwind CSS**, and **WebSockets**. The app allows users to play chess with others in real-time, providing an interactive and engaging online chess experience.
 
- Live link: https://chess-op-frontend.onrender.com/
+Live link: https://chess-op-frontend.onrender.com/
+
+![image](https://github.com/user-attachments/assets/aed09aa2-451d-4804-a85d-488ab91004b0)
+
+![image](https://github.com/user-attachments/assets/b6d32f1f-913d-436f-95eb-05c5712e1306)
+
 
 ## Features
 
